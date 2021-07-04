@@ -1,0 +1,60 @@
+
+(function() {
+  var apifpviewurl = "//api.cookist.com/views/s.gif";
+  console.log("[COMMIT 2] change and debate");
+  /**
+ * Created by lorenzo on 16/11/16.
+ */
+(function () {
+    var Utils = {
+        getCookies: function () {
+            function decodeFunction(value) {
+                var reval;
+                //RFC2068 - Quoted cookies
+                if (value.indexOf("'") === 0) {
+                    reval = value.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+                }
+                else reval = value;
+                try {
+                    reval = decodeURIComponent(reval.replace(/\+/, "%20"));
+                    return reval;
+                } catch (e) {
+                    console.warn("error decoding cookie", e);
+                }
+            };
+
+            var s =  document.cookie.split(";");
+            var acc = {};
+            for(var i=0; i < s.length; i++) {
+                var kv = s[i].split("=",2);
+                if(kv.length == 2) {
+                    acc[decodeURIComponent(Utils.trim(kv[0]))] = decodeFunction(Utils.trim(kv[1]));
+                }
+            }
+            return acc;
+        },
+        trim: function(string) {
+           return string.replace(/^\s*/,"").replace(/\s*$/,"");
+        },
+        getCookie: function (cname) {
+            var cookies = Utils.getCookies();
+            var cookie = cookies[cname];
+            return cookie;
+        },
+        getImage: function (url) {
+            var elem = document.createElement("img");
+            elem.setAttribute("src", url);
+            elem.setAttribute("alt", "apitrack");
+            elem.setAttribute("style", "display: none;");
+            document.body.appendChild(elem);
+        }
+    };
+
+    var useSSL = 'https:' == document.location.protocol;
+    Utils.getImage((useSSL ? 'https:' : 'http:') + apifpviewurl + "?u=" +
+        encodeURIComponent(document.location.href));
+
+
+})();
+ })();
+    
